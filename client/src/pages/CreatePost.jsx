@@ -37,8 +37,32 @@ const CreatePost = () => {
   }
   
   // calls our backend
-  const generateImage = () => {
-  
+  const generateImage = async () => {
+    //check if we have a prompt
+    if(form.prompt) {
+      try {
+        setGeneratingImg(true); //set IMG loading state to true
+        //get back the response by passing the API endpoint to fetch. Second param is an object of options
+        const response = await fetch('http://localhost:8080/api/v1/dalle', {
+          method: 'POST', //all the options in this object are what we are passing to our BE to get back a response
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt: form.prompt }),
+        })
+        // to be able to see the response
+        const data = await response.json();
+        // once we have it we can set it to the state
+        // this will save and render our image
+        setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}`})
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        setGeneratingImg(false); //No matter what, set IMG loading state to false
+      }
+    } else { //triggers if we don't have a prompt
+      alert('Please enter a prompt')
+    }
   }
 
   return (
