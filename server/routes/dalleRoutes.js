@@ -11,7 +11,7 @@ const router = express.Router();
 //add our API key to the configuration
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
-});
+})
 
 //create instance of OpenAI API
 const openai = new OpenAIApi(configuration);
@@ -32,19 +32,19 @@ router.route('/').post(async (req, res) => {
     //generate image. This is the OpenAI API call. Our object takes in a few options
     const aiResponse = await openai.createImage({
       prompt,
-      n: 1,
+      n: 2,
       size: '1024x1024',
       response_format: 'b64_json',
     })
 
     //now we have our AI response, we need to get the image out of it
-    const image = aiResponse.data.data[0].b64_json;
+    const image = aiResponse?.data?.data[0].b64_json;
 
     //send our image to the FE
     res.status(200).json({ photo: image });
   } catch (error) {
     console.log(error);
-    res.status(500).send(error?.response?.data?.error?.message); //could add "|| error.message"
+    res.status(500).send(error?.response?.data?.error?.message || 'Something went wrong!'); 
   }
 });
 

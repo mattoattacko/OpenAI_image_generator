@@ -18,7 +18,37 @@ const CreatePost = () => {
   const [generatingImg, setGeneratingImg] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => { 
+    //async because we are doing data fetching. First and only param is the event
+    e.preventDefault(); 
+
+    //check if we have the form and photo before we submit
+    if(form.prompt && form.photo) {
+      setLoading(true); 
+
+      try {
+        //call the post image route
+        //pass two params, the endpoint and the options object
+        const response = await fetch('http://localhost:8080/api/v1/post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form), //pass the form state to the body. This is the 'req.body' in our BE route we see in the postRoutes.js file
+        })
+
+        //once we get the response successfully we can navigate to the home page
+        await response.json();
+        navigate('/');
+
+      } catch (error) {
+        alert(error);
+      } finally {
+        setLoading(false); //set loading state to false
+      }
+    } else { //triggers if we don't have a prompt or photo
+      alert('Please enter a prompt and generate an image')
+    }
 
   }
   
@@ -48,13 +78,13 @@ const CreatePost = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ prompt: form.prompt }),
+          body: JSON.stringify({ prompt: form?.prompt }),
         })
         // to be able to see the response
         const data = await response.json();
         // once we have it we can set it to the state
         // this will save and render our image
-        setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}`})
+        setForm({ ...form, photo: `data:image/jpeg;base64,${data?.photo}`})
       } catch (error) {
         alert(error.message);
       } finally {
