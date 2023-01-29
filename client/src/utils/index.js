@@ -1,4 +1,6 @@
 // utility functions can be reused across our application
+
+import FileSaver from 'file-saver'
 import { surpriseMePrompts } from '../constants'
 
 // the getRandomPrompt function takes in a prompt as an argument and gives us a random prompt the user can use to generate an AI image
@@ -11,5 +13,10 @@ export function getRandomPrompt(prompt) {
   if(randomPrompt === prompt) return getRandomPrompt(prompt)
 
   return randomPrompt
+}
+
+//using file saver library
+export async function downloadImage(_id, photo) {
+  FileSaver.saveAs(photo, `download-${_id}.jpg`)
 }
 
