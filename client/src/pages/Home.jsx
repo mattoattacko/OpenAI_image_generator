@@ -5,7 +5,9 @@ import { Loader, Card, FormField } from '../components'
 const RenderCards = ({ data, title }) => {
   // check if we have data. If we do, render the images/cards (post = image) while passing all of the post data to each individual card. Else just return the title.
   if (data?.length > 0) {
-    return data.map((post) => <Card key={post._id} {...post} />)
+    return (
+          data.map((post) => <Card key={post._id} {...post} />)
+    )
   }
 
   return (
@@ -20,6 +22,8 @@ const Home = () => {
   const [allPosts, setAllPosts] = useState(null)
 
   const [searchText, setSearchText] = useState('')
+  const [searchedResults, setSearchedResults] = useState(null)
+  const [searchTimeout, setSearchTimeout] = useState(null)
 
   //make a call to get all the posts
   useEffect(() => {
@@ -49,6 +53,21 @@ const Home = () => {
     fetchPosts();
   }, [])
 
+  const handleSearchChange = (e) => {
+    //clear the timeout
+    clearTimeout(searchTimeout)
+
+    setSearchText(e.target.value)
+
+    setSearchTimeout(
+      //debouce the search allowing us to avoid making repeated requests for every single letter typed.
+      setTimeout(() => {
+        const searchResults = allPosts.filter((item) => item.name.toLowerCase().includes(searchText.toLowerCase()) || item.prompt.toLowerCase().includes(searchText.toLowerCase())) //looks in the name and prompt of the post for the search text
+
+        setSearchedResults(searchResults)
+      }, 500),
+    )
+  }
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -62,7 +81,14 @@ const Home = () => {
       </div>
 
       <div className="mt-16">
-        <FormField />
+        <FormField 
+          labelName="Search Posts"
+          type="text"
+          name="text"
+          placeholder="Search Posts"
+          value={searchText}
+          handleChange={handleSearchChange}
+        />
       </div>
 
       <div className="mt-10">
@@ -76,8 +102,7 @@ const Home = () => {
             {/* check if we have a search term. If we do, render an h2 */}
             {searchText && (
               <h2 className="font-medium text-[#666e75] text-xl mb-3">
-                Showing results for
-                <span className="text-[#222328]">
+                Showing results for <span className="text-[#222328]">
                   {searchText}
                 </span>
               </h2>
@@ -89,7 +114,7 @@ const Home = () => {
               {/* if we are not searching for something just render all the posts */}
               {searchText ? (
                 <RenderCards
-                  data={[]}
+                  data={searchedResults} //if there is a search text then render through searched results
                   title="No search results found"
                 />
               ) : (
