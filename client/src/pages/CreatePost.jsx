@@ -42,7 +42,7 @@ const CreatePost = () => {
         navigate('/');
 
       } catch (error) {
-        alert(error);
+        alert(error.message);
       } finally {
         setLoading(false); //set loading state to false
       }
@@ -67,33 +67,60 @@ const CreatePost = () => {
   }
   
   // calls our backend
+  // const generateImage = async () => {
+  //   //check if we have a prompt
+  //   if(form.prompt) {
+  //     try {
+  //       setGeneratingImg(true); //set IMG loading state to true
+  //       //get back the response by passing the API endpoint to fetch. Second param is an object of options
+  //       const response = await fetch('http://localhost:8080/api/v1/dalle', {
+  //         method: 'POST', //all the options in this object are what we are passing to our BE to get back a response
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ prompt: form?.prompt }),
+  //       })
+  //       // to be able to see the response
+  //       const data = await response.json();
+  //       // once we have it we can set it to the state
+  //       // this will save and render our image
+  //       setForm({ ...form, photo: `data:image/jpeg;base64,${data?.photo}`})
+  //     } catch (error) {
+  //       alert(error.message);
+  //     } finally {
+  //       setGeneratingImg(false); //No matter what, set IMG loading state to false
+  //     }
+  //   } else { //triggers if we don't have a prompt
+  //     alert('Please enter a prompt')
+  //   }
+  // }
+
   const generateImage = async () => {
     //check if we have a prompt
-    if(form.prompt) {
+    if (form.prompt) {
       try {
-        setGeneratingImg(true); //set IMG loading state to true
-        //get back the response by passing the API endpoint to fetch. Second param is an object of options
+        setGeneratingImg(true);
+        //get back the response by passing the API endpoint to fetch
         const response = await fetch('https://dall-e2.onrender.com/api/v1/dalle', {
-          method: 'POST', //all the options in this object are what we are passing to our BE to get back a response
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ prompt: form?.prompt }),
-        })
-        // to be able to see the response
+        });
+        //to be able to see the response
         const data = await response.json();
-        // once we have it we can set it to the state
-        // this will save and render our image
-        setForm({ ...form, photo: `data:image/jpeg;base64,${data?.photo}`})
+        //once we have it we can set it to the state
+        setForm({ ...form, photo: `data:image/jpeg;base64,${data?.photo}` });
       } catch (error) {
-        alert(error);
+        alert(error.message);
       } finally {
-        setGeneratingImg(false); //No matter what, set IMG loading state to false
+        setGeneratingImg(false);
       }
-    } else { //triggers if we don't have a prompt
-      alert('Please enter a prompt')
+    } else {
+      alert('Please enter a prompt');
     }
-  }
+  };
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -188,3 +215,4 @@ export default CreatePost
 
 // useNavigate allows us to go back to the home page once the post is created
 // the generatingImg state is used while we are contacting the API and waiting for the image to be generated
+

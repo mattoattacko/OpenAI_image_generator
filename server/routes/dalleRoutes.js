@@ -43,7 +43,7 @@ router.route('/').post(async (req, res) => {
     //send our image to the FE
     res.status(200).json({ photo: image });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     res.status(500).send(error?.response?.data?.error?.message || 'Something went wrong!'); 
   }
 });
