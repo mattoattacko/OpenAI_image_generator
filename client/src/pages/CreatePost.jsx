@@ -29,7 +29,7 @@ const CreatePost = () => {
       try {
         //call the post image route
         //pass two params, the endpoint and the options object
-        const response = await fetch('https://dall-e-3rbf.onrender.com/api/v1/post', {
+        const response = await fetch('https://dall-e2.onrender.com/api/v1/post', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ const CreatePost = () => {
       try {
         setGeneratingImg(true); //set IMG loading state to true
         //get back the response by passing the API endpoint to fetch. Second param is an object of options
-        const response = await fetch('https://dall-e-3rbf.onrender.com/api/v1/dalle', {
+        const response = await fetch('https://dall-e2.onrender.com/api/v1/dalle', {
           method: 'POST', //all the options in this object are what we are passing to our BE to get back a response
           headers: {
             'Content-Type': 'application/json',
