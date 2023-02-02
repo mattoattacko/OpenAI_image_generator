@@ -1,22 +1,22 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { preview } from '../assets'
-import { FormField, Loader } from '../components'
-import { getRandomPrompt } from '../utils'
+import { preview } from '../assets';
+import { FormField, Loader } from '../components';
+import { getRandomPrompt } from '../utils';
 
 
 const CreatePost = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   
   const [form, setForm] = useState({
     name: '',
     prompt: '',
     photo: '',
-  })
+  });
 
-  const [generatingImg, setGeneratingImg] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [generatingImg, setGeneratingImg] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => { 
     //async because we are doing data fetching. First and only param is the event
@@ -29,13 +29,13 @@ const CreatePost = () => {
       try {
         //call the post image route
         //pass two params, the endpoint and the options object
-        const response = await fetch('http://localhost:8080/api/v1/post', {
+        const response = await fetch('https://dall-e-3rbf.onrender.com/api/v1/post', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(form), //pass the form state to the body. This is the 'req.body' in our BE route we see in the postRoutes.js file
-        })
+        });
 
         //once we get the response successfully we can navigate to the home page
         await response.json();
@@ -73,7 +73,7 @@ const CreatePost = () => {
       try {
         setGeneratingImg(true); //set IMG loading state to true
         //get back the response by passing the API endpoint to fetch. Second param is an object of options
-        const response = await fetch('http://localhost:8080/api/v1/dalle', {
+        const response = await fetch('https://dall-e-3rbf.onrender.com/api/v1/dalle', {
           method: 'POST', //all the options in this object are what we are passing to our BE to get back a response
           headers: {
             'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ const CreatePost = () => {
         // this will save and render our image
         setForm({ ...form, photo: `data:image/jpeg;base64,${data?.photo}`})
       } catch (error) {
-        alert(error.message);
+        alert(error);
       } finally {
         setGeneratingImg(false); //No matter what, set IMG loading state to false
       }
